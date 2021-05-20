@@ -8,6 +8,19 @@ LOG_FILE_PATH = (
     "C:\\Users\\james\\Documents\\My Games\\Binding of Isaac Repentance\\log.txt"
 )
 
+# From: https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
+class bcolors:
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKCYAN = "\033[96m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+
+
 # Variables
 log_file_handle = None
 cached_length = 0
@@ -67,6 +80,12 @@ def parse_log_line(line_bytes: str):
 
 
 def printf(msg: str):
+    lowercase_msg = msg.lower()
+    if "error" in lowercase_msg or "failed" in lowercase_msg:
+        msg = f"{bcolors.FAIL}{msg}{bcolors.ENDC}"
+    elif "warn" in lowercase_msg:
+        msg = f"{bcolors.WARNING}{msg}{bcolors.ENDC}"
+
     print(msg, flush=True)
 
 

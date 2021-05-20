@@ -5,6 +5,11 @@
         "en_US"
     ],
     "words": [
+        "bcolors",
+        "endc",
+        "okblue",
+        "okcyan",
+        "okgreen",
         "printf"
     ]
 }
