@@ -61,14 +61,28 @@ def parse_log(log_content: str):
 
 def parse_log_line(line_bytes: str):
     # We read the log in binary form, so we need to convert it to a normal string
-    line = line_bytes.decode("utf-8")
+    line = line_bytes.decode("utf-8").strip()
 
     # Don't print empty lines
     if line == "":
         return
 
-    # Print all warnings and errors
     lowercase_line = line.lower()
+
+    # Don't print some specific messages
+    if lowercase_line.startswith("[info] - [warn] sound") and lowercase_line.endswith(
+        "has no samples."
+    ):
+        return
+    if lowercase_line.startswith("[info] - lua mem usage: "):
+        return
+    if (
+        lowercase_line
+        == "[info] - [warn] steamcloud is either not available or disabled in options.ini."
+    ):
+        return
+
+    # Print all warnings and errors
     if "warn" in lowercase_line or "error" in lowercase_line:
         printf(line)
         return
