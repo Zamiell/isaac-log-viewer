@@ -1,11 +1,14 @@
 # Imports
 import os
-import sys
 import time
+import getpass
 
 # Constants
+USERNAME = getpass.getuser()
 LOG_FILE_PATH = (
-    "C:\\Users\\james\\Documents\\My Games\\Binding of Isaac Repentance\\log.txt"
+    "C:\\Users\\"
+    + USERNAME
+    + "\\Documents\\My Games\\Binding of Isaac Repentance\\log.txt"
 )
 
 # From: https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
@@ -81,24 +84,30 @@ def parse_log_line(line_bytes: str):
         == "[info] - [warn] steamcloud is either not available or disabled in options.ini."
     ):
         return
-
-    # Print all warnings and errors
-    if "warn" in lowercase_line or "error" in lowercase_line:
-        printf(line)
+    if lowercase_line.startswith("[info] - [warn] no animation named "):
+        return
+    if lowercase_line.startswith(
+        "[info] - [warn] last boss died without triggering the deathspawn."
+    ):
         return
 
-    # Print lines that have to do with Lua
-    if "lua" in lowercase_line:
-        printf(line)
-        return
+    if "error" in lowercase_line or "failed" in lowercase_line:
+        # Print all errors
+        print_color(line, bcolors.FAIL)
+    elif "warn" in lowercase_line:
+        # Print all warnings
+        print_color(line, bcolors.WARNING)
+    elif "Compilation successful." in line:
+        # Print IsaacScript success messages in green
+        print_color(line, bcolors.OKGREEN)
+    elif "lua" in lowercase_line:
+        # Print lines that have to do with Lua
+        print_color(line)
 
 
-def printf(msg: str):
-    lowercase_msg = msg.lower()
-    if "error" in lowercase_msg or "failed" in lowercase_msg:
-        msg = f"{bcolors.FAIL}{msg}{bcolors.ENDC}"
-    elif "warn" in lowercase_msg:
-        msg = f"{bcolors.WARNING}{msg}{bcolors.ENDC}"
+def print_color(msg: str, color: str = ""):
+    if color != "":
+        msg = f"{color}{msg}{bcolors.ENDC}"
 
     print(msg, flush=True)
 
