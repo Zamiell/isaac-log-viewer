@@ -22,6 +22,7 @@ class bcolors:
     ENDC = "\033[0m"
     BOLD = "\033[1m"
     UNDERLINE = "\033[4m"
+    PINK = "\033[38;5;206m"
 
 
 # Variables
@@ -90,6 +91,8 @@ def parse_log_line(line_bytes: str):
         "[info] - [warn] last boss died without triggering the deathspawn."
     ):
         return
+    if lowercase_line.startswith("[assert] - error: game start seed was not set."):
+        return
 
     if "error" in lowercase_line or "failed" in lowercase_line:
         # Print all errors
@@ -100,6 +103,10 @@ def parse_log_line(line_bytes: str):
     elif "Compilation successful." in line:
         # Print IsaacScript success messages in green
         print_color(line, bcolors.OKGREEN)
+    elif "MC_POST_GAME_STARTED" in line or "Connected to localhost" in line:
+        print_color(line, bcolors.OKCYAN)
+    elif "getting here" in lowercase_line:
+        print_color(line, bcolors.PINK)
     elif "lua" in lowercase_line:
         # Print lines that have to do with Lua
         print_color(line)
