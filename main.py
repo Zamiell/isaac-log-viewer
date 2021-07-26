@@ -93,6 +93,8 @@ def parse_log_line(line_bytes: str):
         return
     if lowercase_line.startswith("[assert] - error: game start seed was not set."):
         return
+    if lowercase_line.startswith("[info] - [warn] item pool ran out of repicks"):
+        return
 
     if "error" in lowercase_line or "failed" in lowercase_line:
         # Print all errors
