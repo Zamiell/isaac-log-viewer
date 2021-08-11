@@ -5,11 +5,16 @@ import getpass
 
 # Constants
 USERNAME = getpass.getuser()
+# EXPANSION_LEVEL = "Rebirth"
+# EXPANSION_LEVEL = "Afterbirth"
+# EXPANSION_LEVEL = "Afterbirth+"
+EXPANSION_LEVEL = "Repentance"
 LOG_FILE_PATH = (
-    "C:\\Users\\"
-    + USERNAME
-    + "\\Documents\\My Games\\Binding of Isaac Repentance\\log.txt"
+    "C:\\Users\\{}\\Documents\\My Games\\Binding of Isaac {}\\log.txt".format(
+        USERNAME, EXPANSION_LEVEL
+    )
 )
+
 
 # From: https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
 class bcolors:
@@ -91,9 +96,11 @@ def parse_log_line(line_bytes: str):
         "[info] - [warn] last boss died without triggering the deathspawn."
     ):
         return
+    if lowercase_line.startswith("[info] - [warn] item pool ran out of repicks"):
+        return
     if lowercase_line.startswith("[assert] - error: game start seed was not set."):
         return
-    if lowercase_line.startswith("[info] - [warn] item pool ran out of repicks"):
+    if lowercase_line.startswith("[assert] - entity teleport detected!"):
         return
 
     if "error" in lowercase_line or "failed" in lowercase_line:
