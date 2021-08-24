@@ -70,7 +70,7 @@ def parse_log(log_content: str):
 
 def parse_log_line(line_bytes: str):
     # We read the log in binary form, so we need to convert it to a normal string
-    line = line_bytes.decode("utf-8").strip()
+    line = line_bytes.decode("Latin-1").strip()
 
     # Don't print empty lines
     if line == "":
