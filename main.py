@@ -1,23 +1,17 @@
-# Imports
 import os
 import time
 import getpass
 
-# Constants
 USERNAME = getpass.getuser()
 # EXPANSION_LEVEL = "Rebirth"
 # EXPANSION_LEVEL = "Afterbirth"
 # EXPANSION_LEVEL = "Afterbirth+"
 EXPANSION_LEVEL = "Repentance"
-LOG_FILE_PATH = (
-    "C:\\Users\\{}\\Documents\\My Games\\Binding of Isaac {}\\log.txt".format(
-        USERNAME, EXPANSION_LEVEL
-    )
-)
+LOG_FILE_PATH = f"C:\\Users\\{USERNAME}\\Documents\\My Games\\Binding of Isaac {EXPANSION_LEVEL}\\log.txt"
 
 
 # From: https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
-class bcolors:
+class BColors:
     HEADER = "\033[95m"
     OKBLUE = "\033[94m"
     OKCYAN = "\033[96m"
@@ -30,7 +24,6 @@ class bcolors:
     PINK = "\033[38;5;206m"
 
 
-# Variables
 log_file_handle = None
 cached_length = 0
 
@@ -72,7 +65,7 @@ def parse_log_line(line_bytes: str):
     # We read the log in binary form, so we need to convert it to a normal string
     line = line_bytes.decode("Latin-1").strip()
 
-    # Don't print empty lines
+    # Don't parse empty lines
     if line == "":
         return
 
@@ -103,27 +96,34 @@ def parse_log_line(line_bytes: str):
     if lowercase_line.startswith("[assert] - entity teleport detected!"):
         return
 
-    if "error" in lowercase_line or "failed" in lowercase_line:
+    if (
+        "error" in lowercase_line
+        or "failed" in lowercase_line
+        or " err: " in lowercase_line
+    ):
         # Print all errors
-        print_color(line, bcolors.FAIL)
+        print_color(line, BColors.FAIL)
     elif "warn" in lowercase_line:
         # Print all warnings
-        print_color(line, bcolors.WARNING)
+        print_color(line, BColors.WARNING)
     elif "Compilation successful." in line:
         # Print IsaacScript success messages in green
-        print_color(line, bcolors.OKGREEN)
+        print_color(line, BColors.OKGREEN)
     elif "MC_POST_GAME_STARTED" in line or "Connected to localhost" in line:
-        print_color(line, bcolors.OKCYAN)
+        print_color(line, BColors.OKCYAN)
     elif "getting here" in lowercase_line:
-        print_color(line, bcolors.PINK)
+        print_color(line, BColors.PINK)
     elif "lua" in lowercase_line:
         # Print lines that have to do with Lua
+        print_color(line)
+    elif not lowercase_line.startswith("[info]"):
+        # Print multi-line Lua log output
         print_color(line)
 
 
 def print_color(msg: str, color: str = ""):
     if color != "":
-        msg = f"{color}{msg}{bcolors.ENDC}"
+        msg = f"{color}{msg}{BColors.ENDC}"
 
     print(msg, flush=True)
 
