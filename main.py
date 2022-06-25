@@ -125,7 +125,11 @@ def print_color(msg: str, color: str = ""):
     if color != "":
         msg = f"{color}{msg}{BColors.ENDC}"
 
-    print(msg, flush=True)
+    # Sometimes, printing can fail due to TMTRAINER collectibles.
+    try:
+        print(msg, flush=True)
+    except UnicodeEncodeError:
+        print("[Unable to print line due to corrupted characters.]")
 
 
 if __name__ == "__main__":

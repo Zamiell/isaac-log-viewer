@@ -6,11 +6,14 @@
     ],
     "words": [
         "bcolors",
+        "deathspawn",
         "endc",
         "okblue",
         "okcyan",
         "okgreen",
         "printf",
-        "repicks"
+        "repicks",
+        "steamcloud",
+        "TMTRAINER"
     ]
 }
