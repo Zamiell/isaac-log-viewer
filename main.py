@@ -1,6 +1,8 @@
 import os
 import time
 import getpass
+import argparse
+
 
 USERNAME = getpass.getuser()
 # EXPANSION_LEVEL = "Rebirth"
@@ -29,10 +31,21 @@ cached_length = 0
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Log viewer for The Binding of Isaac.")
+    parser.add_argument(
+        "-t",
+        "--tail",
+        type=int,
+        required=False,
+        help="show last N of log lines",
+        default=0,
+    )
+    args = parser.parse_args()
+
     while True:
         file_size = os.path.getsize(LOG_FILE_PATH)
         if has_log_changed(file_size):
-            read_log(file_size)
+            read_log(file_size, args)
         time.sleep(0.1)
 
 
@@ -40,7 +53,7 @@ def has_log_changed(file_size: int):
     return file_size != cached_length
 
 
-def read_log(file_size: int):
+def read_log(file_size: int, args: argparse.Namespace):
     global log_file_handle
     global cached_length
 
@@ -53,11 +66,16 @@ def read_log(file_size: int):
 
     cached_length = file_size
     new_log_content = log_file_handle.read()
-    parse_log(new_log_content)
+    parse_log(new_log_content, args)
 
 
-def parse_log(log_content: str):
-    for line in log_content.splitlines():
+def parse_log(log_content: str, args: argparse.Namespace):
+    log_lines = log_content.splitlines()
+    tail = len(log_lines)
+    if args.tail:
+        tail = args.tail
+
+    for line in log_lines[-tail:]:
         parse_log_line(line)
 
 
